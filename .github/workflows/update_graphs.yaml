@@ -39,7 +39,7 @@ jobs:
         run: |
           python main.py \
             --region ${{ matrix.region }} \
-            --season tww-season3 \
+            --season tww-season2 \
             --resi-key-level 18
 
       - name: Upload analysis results
@@ -59,23 +59,23 @@ jobs:
           git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
 
           # Create destination folder if missing
-          mkdir -p viz_repo/data/${{ matrix.region }}/tww-season3
+          mkdir -p viz_repo/data/${{ matrix.region }}/tww-season2
 
           # Copy JSON results into the right data folder
-          cp *_timestamps.json viz_repo/data/${{ matrix.region }}/tww-season3/
-          cp *_down_edges.json viz_repo/data/${{ matrix.region }}/tww-season3/
-          cp *_non_resil_edges.json viz_repo/data/${{ matrix.region }}/tww-season3/
+          cp *_timestamps.json viz_repo/data/${{ matrix.region }}/tww-season2/
+          cp *_down_edges.json viz_repo/data/${{ matrix.region }}/tww-season2/
+          cp *_non_resil_edges.json viz_repo/data/${{ matrix.region }}/tww-season2/
 
           cd viz_repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Commit only if there are changes
-          git add data/${{ matrix.region }}/tww-season3/
+          git add data/${{ matrix.region }}/tww-season2/
           if ! git diff --cached --quiet; then
             git commit -m "Update ${{
               matrix.region
-            }} edges for tww-season3"
+            }} edges for tww-season2"
             git push origin main
           else
             echo "No changes to commit for region ${{ matrix.region }}"
