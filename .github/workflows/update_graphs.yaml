@@ -1,4 +1,4 @@
-name: WoW Resilience Analysis
+name: Update Resi Graphs
 
 on:
   workflow_dispatch:
@@ -15,8 +15,17 @@ jobs:
         region: [eu, na]
 
     steps:
-      - name: Checkout repository
+      - name: Checkout current repo
         uses: actions/checkout@v4
+
+      - name: Clone private DB repo
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          git clone https://x-access-token:${PRIVATE_REPO_TOKEN}@github.com/hocus-p0cus/mplus-data-fetcher.git db_repo
+
+      - name: Copy DB files to workspace
+        run: cp db_repo/*.db .
 
       - name: Setup Python
         uses: actions/setup-python@v5
