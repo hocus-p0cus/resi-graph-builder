@@ -24,7 +24,7 @@ jobs:
         run: |
           git clone https://x-access-token:${PRIVATE_REPO_TOKEN}@github.com/hocus-p0cus/mplus-data-fetcher.git db_repo
 
-      - name: Copy DB files to workspace
+      - name: Copy DB files
         run: cp db_repo/*.db .
 
       - name: Setup Python
@@ -50,3 +50,33 @@ jobs:
             *_timestamps.json
             *_down_edges.json
             *_non_resil_edges.json
+
+      - name: Push updated data to visualization repo
+        env:
+          VIS_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          # Clone visualization repo
+          git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
+
+          # Create destination folder if missing
+          mkdir -p viz_repo/data/${{ matrix.region }}/tww-season3
+
+          # Copy JSON results into the right data folder
+          cp *_timestamps.json viz_repo/data/${{ matrix.region }}/tww-season3/
+          cp *_down_edges.json viz_repo/data/${{ matrix.region }}/tww-season3/
+          cp *_non_resil_edges.json viz_repo/data/${{ matrix.region }}/tww-season3/
+
+          cd viz_repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Commit only if there are changes
+          git add data/${{ matrix.region }}/tww-season3/
+          if ! git diff --cached --quiet; then
+            git commit -m "Update ${{
+              matrix.region
+            }} edges for tww-season3"
+            git push origin main
+          else
+            echo "No changes to commit for region ${{ matrix.region }}"
+          fi
