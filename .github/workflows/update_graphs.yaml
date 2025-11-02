@@ -40,7 +40,7 @@ jobs:
           python main.py \
             --region ${{ matrix.region }} \
             --season tww-season3 \
-            --resi-key-level 20
+            --resi-key-level 18
 
       - name: Upload analysis results
         uses: actions/upload-artifact@v4
