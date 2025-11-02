@@ -1,0 +1,50 @@
+name: Update Resi Graphs
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      season:
+        description: "Season identifier"
+        required: true
+        default: "tww-season3"
+
+  # Scheduled trigger: daily at 10:00 UTC
+  schedule:
+    - cron: "0 10 * * *"
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        region: [eu, na]  # adjust your regions here
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run analysis for region ${{ matrix.region }}
+        run: |
+          python main.py \
+            --region ${{ matrix.region }} \
+            --season ${{ github.event.inputs.season or 'tww-season3' }} \
+            --resi-key-level 18
+
+      - name: Upload analysis results
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ matrix.region }}
+          path: |
+            *_timestamps.json
+            *_down_edges.json
+            *_non_resil_edges.json
