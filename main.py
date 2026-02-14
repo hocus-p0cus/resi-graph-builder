@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import List
 
 from models import PropagationEdge
-from sqlite_repository import SQLiteDungeonRepository
+from inmemory_repository import InMemoryDungeonRepository
 from services import ResilienceCalculator, PropagationGraphBuilder
 
 @dataclass(frozen=True)
@@ -92,7 +92,7 @@ class AnalysisOrchestrator:
         self.dungeon_short = dungeon_short
         
         # Dependency Injection - components can be swapped for testing
-        self.repository = SQLiteDungeonRepository(config.db_path)
+        self.repository = InMemoryDungeonRepository(config.db_path)
         self.resilience_calculator = ResilienceCalculator(self.repository)
         self.graph_builder = PropagationGraphBuilder(self.repository, self.resilience_calculator)
         self.result_writer = ResultWriter(config.output_prefix)
