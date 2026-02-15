@@ -14,8 +14,8 @@ on:
         default: '18'
         type: string
 
-  schedule:
-    - cron: "0 10 * * *"
+  #schedule:
+  #  - cron: "0 10 * * *"
 
 jobs:
   analyze:
