@@ -16,7 +16,7 @@ class Config:
 
     @property
     def db_path(self) -> str:
-        return f"{self.season}-{self.region}.db"
+        return f"{self.season}-{self.region}_mapped.db"
 
     @property
     def output_prefix(self) -> str:

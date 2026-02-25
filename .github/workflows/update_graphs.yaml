@@ -36,7 +36,7 @@ jobs:
           git clone https://x-access-token:${PRIVATE_REPO_TOKEN}@github.com/hocus-p0cus/mplus-data-fetcher.git db_repo
 
       - name: Copy DB files
-        run: cp db_repo/*.db .
+        run: cp db_repo/*_mapped.db .
 
       - name: Setup Python
         uses: actions/setup-python@v5
