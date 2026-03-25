@@ -70,22 +70,19 @@ jobs:
           VIS_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           SEASON: ${{ inputs.season || vars.SEASON || 'mn-season1' }}
         run: |
-          # Clone visualization repo
           git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
-
-          # Create destination folder if missing
           mkdir -p viz_repo/public/data/${{ matrix.region }}/${SEASON}
 
-          # Copy JSON results into the right data folder
-          cp *_timestamps.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
-          cp *_down_edges.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
-          cp *_non_resil_edges.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
+          # Copy JSON results, silently skipping any pattern that matches nothing
+          for pattern in "*_timestamps.json" "*_down_edges.json" "*_non_resil_edges.json"; do
+            for file in $pattern; do
+              [ -f "$file" ] && cp "$file" viz_repo/public/data/${{ matrix.region }}/${SEASON}/
+            done
+          done
 
           cd viz_repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Commit only if there are changes
           git add public/data/${{ matrix.region }}/${SEASON}/
           if ! git diff --cached --quiet; then
             git commit -m "Update ${{ matrix.region }} edges for ${SEASON}"
