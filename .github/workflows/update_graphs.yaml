@@ -6,12 +6,12 @@ on:
       season:
         description: 'Season identifier (e.g., tww-season3)'
         required: true
-        default: 'tww-season3'
+        default: 'mn-season1'
         type: string
       resi_key_level:
         description: 'Min key level'
         required: true
-        default: '18'
+        default: '12'
         type: string
 
   #schedule:
@@ -48,8 +48,8 @@ jobs:
 
       - name: Run analysis for region ${{ matrix.region }}
         env:
-          SEASON: ${{ inputs.season || vars.SEASON || 'tww-season3' }}
-          RESI_LEVEL: ${{ inputs.resi_key_level || vars.RESI_KEY_LEVEL || '18' }}
+          SEASON: ${{ inputs.season || vars.SEASON || 'mn-season1' }}
+          RESI_LEVEL: ${{ inputs.resi_key_level || vars.RESI_KEY_LEVEL || '12' }}
         run: |
           python main.py \
             --region ${{ matrix.region }} \
@@ -65,31 +65,31 @@ jobs:
             *_down_edges.json
             *_non_resil_edges.json
 
-     #- name: Push updated data to visualization repo
-     #  env:
-     #    VIS_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-     #    SEASON: ${{ inputs.season || vars.SEASON || 'tww-season3' }}
-     #  run: |
-     #    # Clone visualization repo
-     #    git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
+      - name: Push updated data to visualization repo
+        env:
+          VIS_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          SEASON: ${{ inputs.season || vars.SEASON || 'mn-season1' }}
+        run: |
+          # Clone visualization repo
+          git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
 
-     #    # Create destination folder if missing
-     #    mkdir -p viz_repo/public/data/${{ matrix.region }}/${SEASON}
+          # Create destination folder if missing
+          mkdir -p viz_repo/public/data/${{ matrix.region }}/${SEASON}
 
-     #    # Copy JSON results into the right data folder
-     #    cp *_timestamps.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
-     #    cp *_down_edges.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
-     #    cp *_non_resil_edges.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
+          # Copy JSON results into the right data folder
+          cp *_timestamps.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
+          cp *_down_edges.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
+          cp *_non_resil_edges.json viz_repo/public/data/${{ matrix.region }}/${SEASON}/
 
-     #    cd viz_repo
-     #    git config user.name "github-actions[bot]"
-     #    git config user.email "github-actions[bot]@users.noreply.github.com"
+          cd viz_repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-     #    # Commit only if there are changes
-     #    git add public/data/${{ matrix.region }}/${SEASON}/
-     #    if ! git diff --cached --quiet; then
-     #      git commit -m "Update ${{ matrix.region }} edges for ${SEASON}"
-     #      git push origin main
-     #    else
-     #      echo "No changes to commit for region ${{ matrix.region }}"
-     #    fi
+          # Commit only if there are changes
+          git add public/data/${{ matrix.region }}/${SEASON}/
+          if ! git diff --cached --quiet; then
+            git commit -m "Update ${{ matrix.region }} edges for ${SEASON}"
+            git push origin main
+          else
+            echo "No changes to commit for region ${{ matrix.region }}"
+          fi
