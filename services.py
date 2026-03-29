@@ -11,11 +11,11 @@ class ResilienceCalculator:
         self.repository = repository
     
     def calculate_resilience_level(self, character_id: str, timestamp: str,
-                                   dungeons: List[str], max_level: int, min_level: int = 18) -> int:
+                                   dungeons: List[str], max_level: int, min_level: int = 12) -> int:
         """
         Calculate resilient key level for a character at a given timestamp.
         Resilience = minimum of highest completed levels across all dungeons.
-        MIN LEVEL IS 18 BY DEFAULT
+        MIN LEVEL IS 12 BY DEFAULT
         
         Args:
             timestamp: ISO 8601 string (e.g., "2025-09-24T20:38:11.000Z")
