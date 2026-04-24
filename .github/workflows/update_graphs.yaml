@@ -11,7 +11,7 @@ on:
       resi_key_level:
         description: 'Min key level'
         required: true
-        default: '12'
+        default: '16'
         type: string
 
   schedule:
@@ -29,14 +29,30 @@ jobs:
       - name: Checkout current repo
         uses: actions/checkout@v4
 
-      - name: Clone private DB repo
+      - name: Download mapped DBs from fetcher repo
         env:
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          SEASON: ${{ inputs.season || vars.SEASON || 'mn-season1' }}
         run: |
-          git clone https://x-access-token:${PRIVATE_REPO_TOKEN}@github.com/hocus-p0cus/mplus-data-fetcher.git db_repo
+          FILE="${SEASON}-${{ matrix.region }}_mapped.db"
+          echo "Downloading ${FILE}..."
+          gh release download \
+            --repo hocus-p0cus/mplus-data-fetcher \
+            --pattern "${FILE}" \
+            --clobber
 
-      - name: Copy DB files
-        run: cp db_repo/*_mapped.db .
+          if [ ! -f "${FILE}" ]; then
+            echo "ERROR: ${FILE} not present in latest release"
+            exit 1
+          fi
+
+          if [ ! -s "${FILE}" ]; then
+            echo "ERROR: ${FILE} exists but is empty"
+            exit 1
+          fi
+
+          SIZE=$(stat -c%s "${FILE}")
+          echo "Downloaded ${FILE} (${SIZE} bytes)"
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -73,14 +89,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      
+
       - name: Push updated data to visualization repo
         env:
           VIS_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           SEASON: ${{ inputs.season || vars.SEASON || 'mn-season1' }}
         run: |
           git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
-          
+
           # Process both regions
           for region in eu na; do
             mkdir -p viz_repo/public/data/${region}/${SEASON}
@@ -88,7 +104,7 @@ jobs:
               cp artifacts/results-${region}/*.json viz_repo/public/data/${region}/${SEASON}/ 2>/dev/null || true
             fi
           done
-          
+
           cd viz_repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
