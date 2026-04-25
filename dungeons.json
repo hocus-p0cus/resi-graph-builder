@@ -1,10 +1,10 @@
 {
   "Algeth'ar Academy": "ACAD",
-  "Magisters' Terrace": "MAG",
-  "Maisara Caverns": "MSC",
-  "Nexus-Point Xenas": "NEXUS",
-  "Pit of Saron": "PoS",
   "Seat of the Triumvirate": "SEAT",
+  "Nexus-Point Xenas": "NEXUS",
   "Skyreach": "SKY",
-  "Windrunner Spire": "SPIRE"
+  "Windrunner Spire": "SPIRE",
+  "Maisara Caverns": "MSC",
+  "Magisters' Terrace": "MAG",
+  "Pit of Saron": "PoS"
 }
