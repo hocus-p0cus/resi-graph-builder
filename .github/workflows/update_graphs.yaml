@@ -90,14 +90,13 @@ jobs:
         with:
           path: artifacts
 
-      - name: Push updated data to visualization repo
+      - name: Push updated data and config to visualization repo
         env:
           VIS_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           SEASON: ${{ inputs.season || vars.SEASON || 'mn-season1' }}
         run: |
           git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
 
-          # Process both regions
           for region in eu na; do
             mkdir -p viz_repo/public/data/${region}/${SEASON}
             if [ -d "artifacts/results-${region}" ]; then
@@ -105,12 +104,14 @@ jobs:
             fi
           done
 
+          python3 update_config.py viz_repo/public/data "${SEASON}"
+
           cd viz_repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/data/
           if ! git diff --cached --quiet; then
-            git commit -m "Update edges for ${SEASON} (both regions)"
+            git commit -m "Update data and config for ${SEASON} (both regions)"
             git push origin main
           else
             echo "No changes to commit"
