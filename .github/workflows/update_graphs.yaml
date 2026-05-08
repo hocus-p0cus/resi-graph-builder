@@ -85,6 +85,8 @@ jobs:
     needs: analyze
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
