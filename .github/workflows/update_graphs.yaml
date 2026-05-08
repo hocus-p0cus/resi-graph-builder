@@ -100,6 +100,7 @@ jobs:
           git clone https://x-access-token:${VIS_TOKEN}@github.com/hocus-p0cus/resil-visualization.git viz_repo
 
           for region in eu na; do
+            rm -rf viz_repo/public/data/${region}/${SEASON}
             mkdir -p viz_repo/public/data/${region}/${SEASON}
             if [ -d "artifacts/results-${region}" ]; then
               cp artifacts/results-${region}/*.json viz_repo/public/data/${region}/${SEASON}/ 2>/dev/null || true

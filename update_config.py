@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 REGIONS = ["eu", "na"]
-TIMESTAMP_PATTERN = re.compile(r"_(\d+)_timestamps\.json$")
+TIMESTAMP_PATTERN = re.compile(r"resi(\d+)_timestamps\.json$")
 
 
 def get_key_levels(season_dir: Path) -> list[int]:
