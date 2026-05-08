@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout current repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Download mapped DBs from fetcher repo
         env:
@@ -57,7 +57,7 @@ jobs:
           echo "Downloaded ${FILE} (${SIZE} bytes)"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
 
@@ -75,7 +75,7 @@ jobs:
             --resi-key-level ${RESI_LEVEL}
 
       - name: Upload analysis results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: results-${{ matrix.region }}
           path: |
@@ -88,9 +88,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Download all artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: artifacts
 
