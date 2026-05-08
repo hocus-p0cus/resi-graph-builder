@@ -11,7 +11,7 @@ on:
       resi_key_level:
         description: 'Min key level'
         required: true
-        default: '16'
+        default: '18'
         type: string
 
   schedule:
@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout current repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download mapped DBs from fetcher repo
         env:
@@ -73,7 +73,7 @@ jobs:
             --resi-key-level ${RESI_LEVEL}
 
       - name: Upload analysis results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: results-${{ matrix.region }}
           path: |
@@ -86,9 +86,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: artifacts
 
