@@ -8,12 +8,12 @@ on:
       season:
         description: 'Season identifier (e.g., tww-season3)'
         required: true
-        default: 'mn-season1'
+        default: 'mn-season2'
         type: string
       resi_key_level:
         description: 'Min key level'
         required: true
-        default: '18'
+        default: '13'
         type: string
 
   schedule:
